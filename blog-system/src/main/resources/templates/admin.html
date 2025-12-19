@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center - Weijue's Blog</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=Orbitron:wght@800&display=swap" rel="stylesheet">
+    <style>
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        @media (max-width: 768px) {
+            .admin-grid { grid-template-columns: 1fr; }
+        }
+        .stats-mini {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="admin-header fade-in">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e;"></div>
+                <h1 style="font-size: 1.5rem;">COMMAND CENTER</h1>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <span style="font-family: monospace; color: var(--text-muted);">USER: ADMIN</span>
+                <a th:href="@{/logout}" class="btn btn-danger" style="font-size: 0.8rem; padding: 0.5rem 1rem;">TERMINATE SESSION</a>
+            </div>
+        </div>
+
+        <div class="admin-grid">
+            <!-- Left Column: Post Management -->
+            <div class="fade-in" style="animation-delay: 0.1s;">
+                <h2 class="mb-4" style="font-family: 'Orbitron'; font-size: 1.2rem; color: var(--accent-color);">DATA STREAMS</h2>
+                
+                <div th:if="${posts.empty}" class="card text-center">
+                    <p style="color: var(--text-muted);">NO DATA AVAILABLE</p>
+                </div>
+
+                <div th:each="post, iterStat : ${posts}" class="card" style="padding: 1.5rem; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="flex: 1;">
+                            <h3 class="post-title" th:text="${post.title}" style="font-size: 1.2rem; margin-bottom: 0.5rem;">Title</h3>
+                            <div class="post-meta">
+                                <span th:text="'ID: ' + ${post.id}">ID</span>
+                                <span>|</span>
+                                <span th:text="${#temporals.format(post.createTime, 'yyyy-MM-dd HH:mm')}">Time</span>
+                            </div>
+                        </div>
+                        <a th:href="@{/post/delete/{id}(id=${post.id})}" 
+                           class="btn btn-danger"
+                           style="padding: 0.3rem 0.8rem; font-size: 0.8rem;"
+                           onclick="return confirm('CONFIRM DELETION PROTOCOL?');">DELETE</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Create New -->
+            <div class="fade-in" style="animation-delay: 0.2s;">
+                <div class="card" style="position: sticky; top: 2rem;">
+                    <h2 class="mb-4" style="font-family: 'Orbitron'; font-size: 1.2rem; color: #22c55e;">NEW TRANSMISSION</h2>
+                    <form method="post" th:action="@{/post}">
+                        <div class="form-group">
+                            <label class="stats-mini">HEADER DATA</label>
+                            <input type="text" name="title" placeholder="Enter Title..." required>
+                        </div>
+                        <div class="form-group">
+                            <label class="stats-mini">PAYLOAD (MARKDOWN SUPPORTED)</label>
+                            <textarea name="content" placeholder="Input stream data..." required style="height: 300px; font-family: monospace; font-size: 0.9rem;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">INITIATE UPLOAD</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="text-center mt-4" style="padding-bottom: 2rem;">
+            <a th:href="@{/}" class="btn btn-outline" style="font-size: 0.8rem;">RETURN TO PUBLIC VIEW</a>
+        </footer>
+    </div>
+
+    <script th:src="@{/js/visual-effects.js}"></script>
+</body>
+</html>

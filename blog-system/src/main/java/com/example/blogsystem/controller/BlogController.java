@@ -2,6 +2,7 @@ package com.example.blogsystem.controller;
 
 import com.example.blogsystem.entity.Post;
 import com.example.blogsystem.repository.PostRepository;
+import com.example.blogsystem.util.MarkdownUtil;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,13 +11,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Controller
 public class BlogController {
 
 	private final PostRepository postRepository;
+	private final MarkdownUtil markdownUtil;
 
-	public BlogController(PostRepository postRepository) {
+	public BlogController(PostRepository postRepository, MarkdownUtil markdownUtil) {
 		this.postRepository = postRepository;
+		this.markdownUtil = markdownUtil;
 	}
 
 	// 公共区域
@@ -26,7 +32,10 @@ public class BlogController {
 	 */
 	@GetMapping("/")
 	public String index(Model model) {
-		model.addAttribute("posts", postRepository.findAll());
+		List<Post> posts = postRepository.findAll();
+		// 渲染 Markdown 为 HTML
+		posts.forEach(post -> post.setContent(markdownUtil.markdownToHtml(post.getContent())));
+		model.addAttribute("posts", posts);
 		return "index";
 	}
 

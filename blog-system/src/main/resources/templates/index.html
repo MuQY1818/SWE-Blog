@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weijue's Blog</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=Orbitron:wght@800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Weijue's Blog</h1>
+            <p class="subtitle">Sharing thoughts, code, and life.</p>
+        </header>
+
+        <div th:if="${posts.empty}" class="card text-center fade-in">
+            <p style="color: var(--text-muted);">还没有发布任何文章。</p>
+        </div>
+
+        <div th:each="post, iterStat : ${posts}" class="card fade-in" th:style="'animation-delay: ' + ${iterStat.index * 0.1} + 's'">
+            <h2 class="post-title" th:text="${post.title}">文章标题</h2>
+            <div class="post-meta">
+                <span th:text="${post.author}">作者</span>
+                <span>•</span>
+                <span th:text="${#temporals.format(post.createTime, 'yyyy-MM-dd HH:mm')}">时间</span>
+            </div>
+            <div class="post-content" th:utext="${post.content}">
+                文章内容...
+            </div>
+        </div>
+
+        <footer class="text-center mt-4" style="padding-bottom: 2rem;">
+            <a th:href="@{/login}" class="admin-link">
+                <span>⚡ Admin Access</span>
+            </a>
+        </footer>
+    </div>
+
+    <!-- Visual Effects Control -->
+    <div class="effects-control fade-in" style="animation-delay: 1s;">
+        <label for="intensity">FX Intensity</label>
+        <input type="range" id="intensity" min="0" max="100" value="100" oninput="window.effectSystem.setIntensity(this.value)">
+    </div>
+
+    <script th:src="@{/js/visual-effects.js}"></script>
+</body>
+</html>
