@@ -143,6 +143,18 @@ h1 {
     box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
 }
 
+.btn-secondary {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background: var(--secondary-color);
+    color: white;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
 .btn-danger {
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;

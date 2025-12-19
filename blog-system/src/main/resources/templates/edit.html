@@ -3,23 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>编辑文章</title>
+    <title>Edit Stream - Weijue's Blog</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>编辑文章</h1>
-    <form th:action="@{/post/update/{id}(id=${post.id})}" method="post">
-        <div>
-            <label for="title">标题:</label>
-            <input type="text" id="title" name="title" th:value="${post.title}" required>
+    <div class="container">
+        <div class="admin-header fade-in">
+            <h1>EDIT TRANSMISSION</h1>
+            <a th:href="@{/admin}" class="btn btn-outline">ABORT</a>
         </div>
-        <div>
-            <label for="content">内容:</label>
-            <textarea id="content" name="content" th:text="${post.content}" required></textarea>
+
+        <div class="card fade-in" style="animation-delay: 0.1s;">
+            <form method="post" th:action="@{/post/update/{id}(id=${post.id})}">
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-bottom: 0.5rem;">HEADER DATA</label>
+                    <input type="text" name="title" th:value="${post.title}" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-bottom: 0.5rem;">PAYLOAD (MARKDOWN SUPPORTED)</label>
+                    <textarea name="content" th:text="${post.content}" required style="height: 400px; font-family: 'JetBrains Mono', monospace;"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">COMMIT UPDATE</button>
+                    <a th:href="@{/post/delete/{id}(id=${post.id})}" 
+                       class="btn btn-danger" 
+                       onclick="return confirm('WARNING: DATA DELETION IS PERMANENT. PROCEED?');">DELETE STREAM</a>
+                </div>
+            </form>
         </div>
-        <div>
-            <button type="submit">更新</button>
-            <a th:href="@{/admin}">取消</a>
-        </div>
-    </form>
+    </div>
+
+    <script th:src="@{/js/visual-effects.js}"></script>
 </body>
 </html>
