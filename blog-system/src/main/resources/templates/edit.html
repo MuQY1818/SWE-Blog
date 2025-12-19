@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑文章</title>
+</head>
+<body>
+    <h1>编辑文章</h1>
+    <form th:action="@{/post/update/{id}(id=${post.id})}" method="post">
+        <div>
+            <label for="title">标题:</label>
+            <input type="text" id="title" name="title" th:value="${post.title}" required>
+        </div>
+        <div>
+            <label for="content">内容:</label>
+            <textarea id="content" name="content" th:text="${post.content}" required></textarea>
+        </div>
+        <div>
+            <button type="submit">更新</button>
+            <a th:href="@{/admin}">取消</a>
+        </div>
+    </form>
+</body>
+</html>

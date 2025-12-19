@@ -61,10 +61,15 @@
                                 <span th:text="${#temporals.format(post.createTime, 'yyyy-MM-dd HH:mm')}">Time</span>
                             </div>
                         </div>
-                        <a th:href="@{/post/delete/{id}(id=${post.id})}" 
-                           class="btn btn-danger"
-                           style="padding: 0.3rem 0.8rem; font-size: 0.8rem;"
-                           onclick="return confirm('CONFIRM DELETION PROTOCOL?');">DELETE</a>
+                        <div class="action-bar">
+                            <a th:href="@{/post/edit/{id}(id=${post.id})}"
+                               class="btn btn-secondary"
+                               style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">EDIT</a>
+                            <a th:href="@{/post/delete/{id}(id=${post.id})}"
+                               class="btn btn-danger"
+                               style="padding: 0.3rem 0.8rem; font-size: 0.8rem;"
+                               onclick="return confirm('CONFIRM DELETION PROTOCOL?');">DELETE</a>
+                        </div>
                     </div>
                 </div>
             </div>

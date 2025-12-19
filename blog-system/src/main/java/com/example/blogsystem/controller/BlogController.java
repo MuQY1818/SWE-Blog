@@ -119,4 +119,38 @@ public class BlogController {
 		postRepository.deleteById(id);
 		return "redirect:/admin";
 	}
+
+	/**
+	 * 编辑文章页面
+	 * 注意：登录状态已由 LoginInterceptor 拦截器统一检查
+	 */
+	@GetMapping("/post/edit/{id}")
+	public String editPost(@PathVariable Long id, Model model) {
+		// 获取文章详情
+		Post post = postRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("文章不存在: " + id));
+		model.addAttribute("post", post);
+		return "edit";
+	}
+
+	/**
+	 * 更新文章
+	 * 注意：登录状态已由 LoginInterceptor 拦截器统一检查
+	 */
+	@PostMapping("/post/update/{id}")
+	public String updatePost(
+			@PathVariable Long id,
+			@RequestParam String title,
+			@RequestParam String content) {
+		// 获取现有文章
+		Post post = postRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("文章不存在: " + id));
+
+		// 更新文章
+		post.setTitle(title);
+		post.setContent(content);
+		postRepository.save(post);
+
+		return "redirect:/admin";
+	}
 }
