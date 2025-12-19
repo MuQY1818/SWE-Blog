@@ -73,31 +73,23 @@ public class BlogController {
 	// 管理区域
 
 	/**
-	 * 管理页面 - 检查登录状态
+	 * 管理页面
+	 * 注意：登录状态已由 LoginInterceptor 拦截器统一检查
 	 */
 	@GetMapping("/admin")
-	public String admin(HttpSession session, Model model) {
-		// 检查登录状态
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
+	public String admin(Model model) {
 		model.addAttribute("posts", postRepository.findAll());
 		return "admin";
 	}
 
 	/**
-	 * 发布文章 - 检查登录状态
+	 * 发布文章
+	 * 注意：登录状态已由 LoginInterceptor 拦截器统一检查
 	 */
 	@PostMapping("/post")
 	public String createPost(
 			@RequestParam String title,
-			@RequestParam String content,
-			HttpSession session) {
-		// 检查登录状态
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-
+			@RequestParam String content) {
 		// 创建并保存文章
 		Post post = new Post();
 		post.setTitle(title);
@@ -109,15 +101,11 @@ public class BlogController {
 	}
 
 	/**
-	 * 删除文章 - 检查登录状态
+	 * 删除文章
+	 * 注意：登录状态已由 LoginInterceptor 拦截器统一检查
 	 */
 	@GetMapping("/post/delete/{id}")
-	public String deletePost(@PathVariable Long id, HttpSession session) {
-		// 检查登录状态
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-
+	public String deletePost(@PathVariable Long id) {
 		// 删除文章
 		postRepository.deleteById(id);
 		return "redirect:/admin";
