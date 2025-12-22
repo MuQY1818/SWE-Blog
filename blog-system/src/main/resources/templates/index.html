@@ -25,7 +25,7 @@
                 <span>•</span>
                 <span th:text="${#temporals.format(post.createTime, 'yyyy-MM-dd HH:mm')}">时间</span>
             </div>
-            <div class="post-content" th:utext="${post.content}">
+            <div class="post-content" th:utext="${post.renderedContent}">
                 文章内容...
             </div>
         </div>

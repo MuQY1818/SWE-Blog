@@ -38,7 +38,9 @@
             </div>
             <div style="display: flex; align-items: center; gap: 1rem;">
                 <span style="font-family: monospace; color: var(--text-muted);">USER: ADMIN</span>
-                <a th:href="@{/logout}" class="btn btn-danger" style="font-size: 0.8rem; padding: 0.5rem 1rem;">TERMINATE SESSION</a>
+                <form method="post" th:action="@{/logout}" style="margin: 0;">
+                    <button type="submit" class="btn btn-danger" style="font-size: 0.8rem; padding: 0.5rem 1rem;">TERMINATE SESSION</button>
+                </form>
             </div>
         </div>
 
@@ -65,10 +67,16 @@
                             <a th:href="@{/post/edit/{id}(id=${post.id})}"
                                class="btn btn-secondary"
                                style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">EDIT</a>
-                            <a th:href="@{/post/delete/{id}(id=${post.id})}"
-                               class="btn btn-danger"
-                               style="padding: 0.3rem 0.8rem; font-size: 0.8rem;"
-                               onclick="return confirm('CONFIRM DELETION PROTOCOL?');">DELETE</a>
+                            <form method="post"
+                                  th:action="@{/post/delete/{id}(id=${post.id})}"
+                                  style="margin: 0;"
+                                  onsubmit="return confirm('CONFIRM DELETION PROTOCOL?');">
+                                <button type="submit"
+                                        class="btn btn-danger"
+                                        style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">
+                                    DELETE
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

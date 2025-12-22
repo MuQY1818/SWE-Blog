@@ -26,9 +26,12 @@
                 </div>
                 <div style="display: flex; gap: 1rem;">
                     <button type="submit" class="btn btn-primary" style="flex: 1;">COMMIT UPDATE</button>
-                    <a th:href="@{/post/delete/{id}(id=${post.id})}" 
-                       class="btn btn-danger" 
-                       onclick="return confirm('WARNING: DATA DELETION IS PERMANENT. PROCEED?');">DELETE STREAM</a>
+                    <button type="submit"
+                            class="btn btn-danger"
+                            th:formaction="@{/post/delete/{id}(id=${post.id})}"
+                            onclick="return confirm('WARNING: DATA DELETION IS PERMANENT. PROCEED?');">
+                        DELETE STREAM
+                    </button>
                 </div>
             </form>
         </div>

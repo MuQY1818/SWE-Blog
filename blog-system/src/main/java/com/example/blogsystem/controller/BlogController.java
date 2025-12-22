@@ -3,7 +3,9 @@ package com.example.blogsystem.controller;
 import com.example.blogsystem.entity.Post;
 import com.example.blogsystem.repository.PostRepository;
 import com.example.blogsystem.util.MarkdownUtil;
-import jakarta.servlet.http.HttpSession;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class BlogController {
@@ -32,9 +33,8 @@ public class BlogController {
 	 */
 	@GetMapping("/")
 	public String index(Model model) {
-		List<Post> posts = postRepository.findAll();
-		// 渲染 Markdown 为 HTML
-		posts.forEach(post -> post.setContent(markdownUtil.markdownToHtml(post.getContent())));
+		List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createTime"));
+		posts.forEach(post -> post.setRenderedContent(markdownUtil.markdownToHtml(post.getContent())));
 		model.addAttribute("posts", posts);
 		return "index";
 	}
@@ -43,77 +43,49 @@ public class BlogController {
 	 * 登录页面
 	 */
 	@GetMapping("/login")
-	public String login(HttpSession session) {
-		// 如果已登录，重定向到管理页
-		if (session.getAttribute("user") != null) {
+	public String login(Authentication authentication) {
+		if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
 			return "redirect:/admin";
 		}
 		return "login";
-	}
-
-	// 登录逻辑
-
-	/**
-	 * 提交登录
-	 */
-	@PostMapping("/login")
-	public String doLogin(
-			@RequestParam String username,
-			@RequestParam String password,
-			HttpSession session) {
-		// 硬编码校验：admin/123456
-		if ("admin".equals(username) && "123456".equals(password)) {
-			session.setAttribute("user", "admin");
-			return "redirect:/admin";
-		}
-		// 登录失败，带错误参数返回
-		return "redirect:/login?error";
-	}
-
-	/**
-	 * 退出登录
-	 */
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate();
-		return "redirect:/";
 	}
 
 	// 管理区域
 
 	/**
 	 * 管理页面
-	 * 注意：登录状态已由 LoginInterceptor 拦截器统一检查
+	 * 注意：访问权限由 Spring Security 统一控制
 	 */
 	@GetMapping("/admin")
 	public String admin(Model model) {
-		model.addAttribute("posts", postRepository.findAll());
+		model.addAttribute("posts", postRepository.findAll(Sort.by(Sort.Direction.DESC, "createTime")));
 		return "admin";
 	}
 
 	/**
 	 * 发布文章
-	 * 注意：登录状态已由 LoginInterceptor 拦截器统一检查
+	 * 注意：访问权限由 Spring Security 统一控制
 	 */
 	@PostMapping("/post")
 	public String createPost(
 			@RequestParam String title,
-			@RequestParam String content) {
+			@RequestParam String content,
+			Authentication authentication) {
 		// 创建并保存文章
 		Post post = new Post();
 		post.setTitle(title);
 		post.setContent(content);
-		post.setAuthor("admin");
+		post.setAuthor(authentication == null ? "admin" : authentication.getName());
 		postRepository.save(post);
 
-		return "redirect:/";
+		return "redirect:/admin";
 	}
 
 	/**
 	 * 删除文章
-	 * 注意：登录状态已由 LoginInterceptor 拦截器统一检查
+	 * 注意：访问权限由 Spring Security 统一控制
 	 */
-	@GetMapping("/post/delete/{id}")
+	@PostMapping("/post/delete/{id}")
 	public String deletePost(@PathVariable Long id) {
 		// 删除文章
 		postRepository.deleteById(id);
@@ -122,7 +94,7 @@ public class BlogController {
 
 	/**
 	 * 编辑文章页面
-	 * 注意：登录状态已由 LoginInterceptor 拦截器统一检查
+	 * 注意：访问权限由 Spring Security 统一控制
 	 */
 	@GetMapping("/post/edit/{id}")
 	public String editPost(@PathVariable Long id, Model model) {
@@ -135,13 +107,14 @@ public class BlogController {
 
 	/**
 	 * 更新文章
-	 * 注意：登录状态已由 LoginInterceptor 拦截器统一检查
+	 * 注意：访问权限由 Spring Security 统一控制
 	 */
 	@PostMapping("/post/update/{id}")
 	public String updatePost(
 			@PathVariable Long id,
 			@RequestParam String title,
-			@RequestParam String content) {
+			@RequestParam String content,
+			Authentication authentication) {
 		// 获取现有文章
 		Post post = postRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("文章不存在: " + id));
@@ -149,6 +122,9 @@ public class BlogController {
 		// 更新文章
 		post.setTitle(title);
 		post.setContent(content);
+		if (authentication != null) {
+			post.setAuthor(authentication.getName());
+		}
 		postRepository.save(post);
 
 		return "redirect:/admin";

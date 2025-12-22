@@ -5,9 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,15 +21,17 @@ public class Post {
 	@Column(nullable = false)
 	private String title;
 
-	@Lob
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "TEXT")
 	private String content;
 
 	@Column(nullable = false)
 	private String author;
 
-	@Column(nullable = false)
+	@Column(name = "create_time", nullable = false)
 	private LocalDateTime createTime;
+
+	@Transient
+	private String renderedContent;
 
 	public Post() {
 	}
@@ -75,6 +77,14 @@ public class Post {
 		this.createTime = createTime;
 	}
 
+	public String getRenderedContent() {
+		return renderedContent;
+	}
+
+	public void setRenderedContent(String renderedContent) {
+		this.renderedContent = renderedContent;
+	}
+
 	@PrePersist
 	public void prePersist() {
 		if (createTime == null) {
@@ -82,4 +92,3 @@ public class Post {
 		}
 	}
 }
-

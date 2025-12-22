@@ -23,6 +23,8 @@ public class MarkdownUtil {
                 .build();
         this.renderer = HtmlRenderer.builder()
                 .extensions(extensions)
+                .escapeHtml(true)
+                .sanitizeUrls(true)
                 .build();
     }
 

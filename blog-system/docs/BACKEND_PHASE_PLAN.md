@@ -3,9 +3,9 @@
 ## 目标与约束（必须满足）
 
 - **单体应用**：Spring Boot 3.x + Maven + Java 17，最终打包为单一可执行 JAR。
-- **数据库**：必须使用 **H2 内存库** `jdbc:h2:mem:blogdb`（不依赖外部数据库软件）。
+- **数据库**：`dev` 使用 **H2 内存库** `jdbc:h2:mem:blogdb`；`prod` 迁移到 **PostgreSQL**（外部实例）。
 - **渲染模式**：Spring MVC，Controller **返回视图名 String**（不返回 JSON），后续由 Thymeleaf 渲染模板。
-- **鉴权**：禁止 Spring Security；使用 `HttpSession` 做简单登录态与拦截。
+- **鉴权**：使用 **Spring Security**（表单登录 + CSRF），替代自定义 `HttpSession` 拦截器。
 
 ## 代码结构（按课程要求统一）
 
@@ -24,7 +24,8 @@
 
 ### Phase 0：工程基线整理（一次性）
 
-- 将 `application.properties` 调整回 **H2 内存模式** + `ddl-auto=update` + `server.port=8080` + 开启 H2 Console。
+- 使用 Profile 拆分配置：`application-dev.properties`（H2）/ `application-prod.properties`（PostgreSQL）。
+- 引入 Flyway 管理 schema（生产环境使用 `ddl-auto=validate`）。
 - 清理不应提交的文件（例如 `src/main/java/com/.DS_Store`）。
 - （可选但推荐）将 Spring Boot 版本从 `*-SNAPSHOT` 调整为稳定版，避免 CI 依赖解析不稳定（你确认后再改）。
 
@@ -40,9 +41,9 @@
 ### Phase 2：Controller 核心路由（按需求逐条实现）
 
 - 公共：`GET /`、`GET /login`
-- 登录：`POST /login`（硬编码 admin/123456）、`GET /logout`
-- 管理：`GET /admin`、`POST /post`、`GET /post/delete/{id}`
-- 所有管理相关接口做 **Session 检查**（未登录重定向 `/login`）。
+- 登录：`POST /login`（Spring Security 表单登录）、`POST /logout`
+- 管理：`GET /admin`、`POST /post`、`POST /post/delete/{id}`
+- 所有管理相关接口由 Spring Security 统一做鉴权 + CSRF 防护。
 
 **阶段测试**：使用 `@SpringBootTest` + `MockMvc` 验证：
 
@@ -52,7 +53,7 @@
 
 ### Phase 3：（可选）拦截器统一鉴权
 
-在 `WebConfig` 注册 `HandlerInterceptor`，统一拦截 `/admin`、`/post/**`，减少 Controller 重复判断（但仍保持逻辑清晰、可读）。
+不再使用 `HandlerInterceptor` 做登录态拦截；改为 Spring Security 统一配置权限规则。
 
 **阶段测试**：复用 Phase 2 的 MockMvc 用例。
 

@@ -1,0 +1,87 @@
+### ====================================
+### 博客系统 API 测试
+### 使用方法：点击每个请求上方的 "Send Request"
+### ====================================
+
+@baseUrl = http://localhost:8080
+@csrf = <从 /login 响应 HTML 中提取 name="_csrf" value="...">
+
+### ----------------------------------
+### 公开接口（无需登录）
+### ----------------------------------
+
+### 获取首页
+GET {{baseUrl}}/
+
+### 获取登录页面
+GET {{baseUrl}}/login
+
+### ----------------------------------
+### 登录/登出
+### ----------------------------------
+
+### 登录（使用默认账号）
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/x-www-form-urlencoded
+
+username=admin&password=123456&_csrf={{csrf}}
+
+### 登出
+POST {{baseUrl}}/logout
+Content-Type: application/x-www-form-urlencoded
+Cookie: {{login.response.headers.Set-Cookie}}
+
+_csrf={{csrf}}
+
+### ----------------------------------
+### 需要登录的接口（先执行上面的登录请求）
+### ----------------------------------
+
+### 获取管理页面
+GET {{baseUrl}}/admin
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 发布新文章
+POST {{baseUrl}}/post
+Content-Type: application/x-www-form-urlencoded
+Cookie: {{login.response.headers.Set-Cookie}}
+
+title=测试文章标题&content=## 这是一篇测试文章
+
+使用 Markdown 格式编写的内容。
+
+- 列表项 1
+- 列表项 2
+
+**加粗文字**
+
+&_csrf={{csrf}}
+
+### 获取编辑文章页面（替换 {id} 为实际文章 ID）
+GET {{baseUrl}}/post/edit/1
+Cookie: {{login.response.headers.Set-Cookie}}
+
+### 更新文章（替换 {id} 为实际文章 ID）
+POST {{baseUrl}}/post/update/1
+Content-Type: application/x-www-form-urlencoded
+Cookie: {{login.response.headers.Set-Cookie}}
+
+title=更新后的标题&content=更新后的内容&_csrf={{csrf}}
+
+### 删除文章（替换 {id} 为实际文章 ID）
+POST {{baseUrl}}/post/delete/1
+Content-Type: application/x-www-form-urlencoded
+Cookie: {{login.response.headers.Set-Cookie}}
+
+_csrf={{csrf}}
+
+### ----------------------------------
+### H2 数据库控制台
+### ----------------------------------
+
+### 访问 H2 控制台（在浏览器中打开更方便）
+# URL: http://localhost:8080/h2-console
+# JDBC URL: jdbc:h2:mem:blogdb
+# 用户名: sa
+# 密码: (空)

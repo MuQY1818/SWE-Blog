@@ -5,6 +5,11 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Local data / databases ###
+data/
+*.mv.db
+*.trace.db
+
 ### STS ###
 .apt_generated
 .classpath
