@@ -34,6 +34,7 @@ public class BlogController {
 	@GetMapping("/")
 	public String index(Model model) {
 		List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createTime"));
+		// 渲染 Markdown 为 HTML
 		posts.forEach(post -> post.setRenderedContent(markdownUtil.markdownToHtml(post.getContent())));
 		model.addAttribute("posts", posts);
 		return "index";

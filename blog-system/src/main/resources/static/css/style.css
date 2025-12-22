@@ -109,11 +109,132 @@ h1 {
     gap: 1rem;
 }
 
+/* --- Markdown Content Styling --- */
 .post-content {
     font-size: 1rem;
     color: #cbd5e1;
-    white-space: pre-wrap;
-    line-height: 1.7;
+    line-height: 1.8;
+}
+
+.post-content h1, 
+.post-content h2, 
+.post-content h3, 
+.post-content h4, 
+.post-content h5, 
+.post-content h6 {
+    color: var(--primary-color);
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.post-content h1 { 
+    font-size: 2rem; 
+    border-bottom: 1px solid var(--border-color); 
+    padding-bottom: 0.5rem; 
+}
+
+.post-content h2 { font-size: 1.5rem; }
+.post-content h3 { font-size: 1.25rem; }
+
+.post-content p {
+    margin-bottom: 1rem;
+}
+
+.post-content ul, 
+.post-content ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.post-content li {
+    margin-bottom: 0.5rem;
+}
+
+.post-content li::marker {
+    color: var(--secondary-color);
+}
+
+.post-content strong {
+    color: var(--accent-color);
+}
+
+.post-content em {
+    color: var(--secondary-color);
+}
+
+.post-content a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--secondary-color);
+    transition: all 0.2s;
+}
+
+.post-content a:hover {
+    color: var(--primary-color);
+    border-bottom-style: solid;
+}
+
+.post-content blockquote {
+    border-left: 4px solid var(--secondary-color);
+    background: rgba(59, 130, 246, 0.05);
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    margin: 1.5rem 0;
+    border-radius: 0 4px 4px 0;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Code Blocks */
+.post-content pre {
+    background: #0d1117;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+/* Optional: "Code" label for pre blocks */
+.post-content pre::before {
+    content: "CODE";
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--border-color);
+    color: var(--primary-color);
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-bottom-left-radius: 6px;
+    opacity: 0.8;
+}
+
+.post-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+}
+
+/* Inline Code */
+.post-content :not(pre) > code {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--secondary-color);
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+}
+
+.post-content img {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin: 1rem 0;
+}
+
+.post-content hr {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 2rem 0;
 }
 
 /* Buttons */
