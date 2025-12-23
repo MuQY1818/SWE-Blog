@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Weijue. All rights reserved.
+ * Copyright (c) 2025 Weijue. All rights reserved.
  */
 package com.example.blogsystem.util;
 
